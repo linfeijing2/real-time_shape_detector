@@ -1,1 +1,23 @@
 # real-time_shape_detector
+
+#### Introduction
+In our final project, we designed and implemented a Shape Detector, which is capable of detecting analytic shapes and a key via the camera in real time. The algorithm used in shape detection is generalized Hough transform. Blurring, edge detection, and adaptive thresholding are used to process the image prior to detection. We detected lines, rectangles, circles, and a key. In the final application, the user can select whichever shape detection technique available on the tablet screen, and the shape detection is performed in real-time. The shape selected will be detected and drawn out. We were able to detect the most prominent lines in the image, up to two geometric shapes at a time, and one key in our final deliverable.
+
+**Video Demo**: https://www.youtube.com/watch?v=jmS6UlUH4Q4
+#### Literature Review
+Citation:
+Ballard, Dana H. Generalizing the Hough transform to detect arbitrary shapes. Pattern recognition 13.2 (1981): 111-122.
+
+The Hough Transform is a robust algorithm for detecting shapes, especially for lines, circles, and ellipses. The Generalized Hough Transform can also be used to detect arbitrary shapes. To apply the algorithms used for the project, the Gaussian filter will be used  to smooth the noise of the image followed by the Sobel filter for edge detection. From the Sobel filter, we can obtain the information of the gradient which will be used in the Hough transform. Using the parametric equations for an analytic shape, we can calculate the possible centers of the shape from the gradient information. For any general shape, we can store the gradient information of a reference image in an R table, then look up this information and do comparisons with the given image in the detection stage.
+The Hough transform could accurately detect lines. We attempted to perform polygon detection from the results of the line detection, but we found an alternate method from the opencv library and documentations that is more suitable for polygon detection. To detect rectangles, find all the closed contours in the image. Check whether they are  sufficiently large to eliminate noisy results. Then approximate the contour as polygon and check whether the number of corners is four, which should return a quadrilateral.
+
+The noisy pixels in the background severely undermines the functionality of the detector. We applied adaptive thresholding from the opencv library to separate the foreground from the background. This makes detection a lot more accurate when the object can be easily separated from the background.
+
+#### Result
+The application can successfully detect the shapes mentioned in the above section. However, it is pretty sensitive to the noise in the background as shown in figure 2 and 3, section IV. The rectangles and lines are drawn multiple times around the logo “KALA” in the black brochure and multiple rectangles around the brochure since the background of the wooden table with patterns provides a lot of noise. During the implementation, we have encountered several problems such as unsatisfied results from edge detection and applying the generalized Hough transform without an ndarray. For better edge detection, we compared the results from both the Sobel filter and the Canny edge detector, and we applied the Canny edge detector due to better results of image detection. We also used a pre-computed R table stored as a look-up table to apply the Hough transform without using an ndarray. To accommodate the scaling and rotation of the objects, the scaled and rotated R tables are stored in separate tables.
+
+#### Suggestions for Extensions and/or Modifications
+The shape detector application can be improved by adding the feature which is capable of detecting overlaps and allowing users to select regions of interest. Once the overlapping objects provide enough information on its shape, then at a certain threshold the application can be improved by identifying corresponding shapes. Moreover, once the ROI (region of interest) is selected by the user, only objects inside the region should be detected to avoid unwanted results and unrelated objects.
+
+#### Software/Hardware Documentation
+The final project is built upon the android code provided for lab7 and uses some additional opencv functions. MainActivity.java contains the code of our shape detector implementation. Activity_main.xml is modified to create additional control buttons. The function onCameraFrame contains the shape detection algorithms. When the user presses a button, the appFlag is set so the corresponding shape detection is performed.  
